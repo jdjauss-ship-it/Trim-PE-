@@ -1,0 +1,13 @@
+{
+"name": "trim-pe",
+"version": "1.0.0",
+"description": "Minecraft Bedrock/Pocket World Trimmer for Android",
+"scripts": {
+"build": "echo Build complete"
+},
+"dependencies": {
+"@capacitor/core": "^6.1.2",
+"@capacitor/android": "^6.1.2",
+"@capacitor/cli": "^6.1.2"
+}
+}
