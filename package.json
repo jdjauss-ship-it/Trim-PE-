@@ -1,13 +1,15 @@
 {
-"name": "trim-pe",
-"version": "1.0.0",
-"description": "Minecraft Bedrock/Pocket World Trimmer for Android",
-"scripts": {
-"build": "echo Build complete"
-},
-"dependencies": {
-"@capacitor/core": "^6.1.2",
-"@capacitor/android": "^6.1.2",
-"@capacitor/cli": "^6.1.2"
-}
+  "name": "trim-pe",
+  "version": "1.0.0",
+  "description": "Minecraft Bedrock/Pocket World Trimmer for Android",
+  "scripts": {
+    "build": "echo Build complete",
+    "android:add": "npx cap add android",
+    "android:sync": "npx cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2"
+  }
 }
