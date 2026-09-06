@@ -19,6 +19,15 @@
         <button class="menu-btn" onclick="selectWorld()">
             📁 <span>Select World</span>
         </button>
+        <input
+    type="file"
+    id="worldPicker"
+    webkitdirectory
+    directory
+    multiple
+    style="display: none;"
+    onchange="worldSelected(this)"
+>
 
         <button class="menu-btn" onclick="trimWorld()">
             ✂️ <span>Trim World</span>
