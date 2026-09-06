@@ -234,16 +234,20 @@ async function testNativeConnection() {
 
     try {
 
-        if (!window.Capacitor) {
-            alert("❌ Capacitor was not found!");
+        const plugin =
+            window.Capacitor?.Plugins?.TrimPlugin;
+
+        if (!plugin) {
+
+            alert(
+                "❌ TrimPlugin not found."
+            );
+
             return;
         }
 
-        const TrimPlugin =
-            window.Capacitor.registerPlugin("TrimPlugin");
-
         const result =
-            await TrimPlugin.testConnection();
+            await plugin.testConnection();
 
         alert(
             "✅ " + result.message
@@ -253,8 +257,8 @@ async function testNativeConnection() {
 
         alert(
             "❌ Native connection failed:\n\n" +
-            error
+            String(error)
         );
 
     }
-           }
+}
