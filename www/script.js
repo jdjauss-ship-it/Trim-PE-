@@ -1,5 +1,21 @@
 function selectWorld() {
-alert("Select World feature will be added soon!");
+    document.getElementById("worldPicker").click();
+}
+
+function worldSelected(input) {
+    const files = input.files;
+
+    if (!files || files.length === 0) {
+        return;
+    }
+
+    const firstFile = files[0];
+
+    alert(
+        "World selected successfully!\n\n" +
+        "Files found: " + files.length + "\n" +
+        "First file: " + firstFile.name
+    );
 }
 
 function trimWorld() {
