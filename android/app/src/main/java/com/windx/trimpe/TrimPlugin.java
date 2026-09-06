@@ -1,19 +1,19 @@
 package com.windx.trimpe;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+
+import androidx.activity.result.ActivityResult;
 
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
+import com.getcapacitor.annotation.ActivityCallback;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
 @CapacitorPlugin(name = "TrimPlugin")
 public class TrimPlugin extends Plugin {
-
-    private PluginCall savedCall;
 
     @PluginMethod
     public void testConnection(PluginCall call) {
@@ -28,66 +28,67 @@ public class TrimPlugin extends Plugin {
     @PluginMethod
     public void selectWorld(PluginCall call) {
 
-        savedCall = call;
-
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        Intent intent =
+                new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
 
         intent.addFlags(
-            Intent.FLAG_GRANT_READ_URI_PERMISSION |
-            Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
-            Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION |
-            Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
+                Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
+                Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION |
+                Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
         );
 
-        startActivityForResult(call, intent, "selectWorld");
+        startActivityForResult(
+                call,
+                intent,
+                "selectWorldResult"
+        );
     }
 
 
-    @Override
-    protected void handleOnActivityResult(
-            int requestCode,
-            int resultCode,
-            Intent data) {
+    @ActivityCallback
+    private void selectWorldResult(
+            PluginCall call,
+            ActivityResult result
+    ) {
 
-        super.handleOnActivityResult(
-            requestCode,
-            resultCode,
-            data
-        );
-
-        if (savedCall == null) {
+        if (call == null) {
             return;
         }
 
-        if (resultCode != Activity.RESULT_OK || data == null) {
+        if (result.getResultCode()
+                != android.app.Activity.RESULT_OK) {
 
-            savedCall.reject("No world selected");
+            call.reject("No world selected");
+            return;
+        }
 
-            savedCall = null;
+        Intent data = result.getData();
 
+        if (data == null) {
+            call.reject("No folder selected");
             return;
         }
 
         Uri uri = data.getData();
 
         if (uri == null) {
-
-            savedCall.reject("Invalid world folder");
-
-            savedCall = null;
-
+            call.reject("Invalid world folder");
             return;
         }
 
         int flags = data.getFlags()
-                & (Intent.FLAG_GRANT_READ_URI_PERMISSION |
-                   Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
         try {
 
             getActivity()
-                .getContentResolver()
-                .takePersistableUriPermission(uri, flags);
+                    .getContentResolver()
+                    .takePersistableUriPermission(
+                            uri,
+                            flags
+                    );
 
         } catch (Exception ignored) {
         }
@@ -96,8 +97,6 @@ public class TrimPlugin extends Plugin {
 
         response.put("uri", uri.toString());
 
-        savedCall.resolve(response);
-
-        savedCall = null;
+        call.resolve(response);
     }
-}
+            }
