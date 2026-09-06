@@ -100,3 +100,25 @@ window.open("https://github.com/jdjauss-ship-it", "_blank");
 function goHome() {
 location.reload();
 }
+/* =========================
+   NATIVE ANDROID TEST
+========================= */
+
+async function testNativeConnection() {
+
+    try {
+
+        const result =
+            await window.Capacitor.Plugins.TrimPlugin
+                .testConnection();
+
+        alert(result.message);
+
+    } catch (error) {
+
+        alert(
+            "Native connection failed: " + error
+        );
+
+    }
+            }
