@@ -1,9 +1,8 @@
 package com.windx.trimpe;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-
-import androidx.activity.result.ActivityResult;
 
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -20,11 +19,7 @@ public class TrimPlugin extends Plugin {
     public void testConnection(PluginCall call) {
 
         JSObject result = new JSObject();
-
-        result.put(
-            "message",
-            "Trim PE Native Engine Connected!"
-        );
+        result.put("message", "Trim PE Native Engine Connected!");
 
         call.resolve(result);
     }
@@ -44,43 +39,29 @@ public class TrimPlugin extends Plugin {
             Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
         );
 
-        startActivityForResult(
-            call,
-            intent,
-            "selectWorldResult"
-        );
+        startActivityForResult(call, intent, "selectWorld");
     }
 
 
     @Override
     protected void handleOnActivityResult(
-            String callbackName,
-            ActivityResult result) {
+            int requestCode,
+            int resultCode,
+            Intent data) {
 
-        super.handleOnActivityResult(callbackName, result);
-
-        if (!callbackName.equals("selectWorldResult")) {
-            return;
-        }
+        super.handleOnActivityResult(
+            requestCode,
+            resultCode,
+            data
+        );
 
         if (savedCall == null) {
             return;
         }
 
-        if (result.getResultCode() != getActivity().RESULT_OK) {
+        if (resultCode != Activity.RESULT_OK || data == null) {
 
             savedCall.reject("No world selected");
-
-            savedCall = null;
-
-            return;
-        }
-
-        Intent data = result.getData();
-
-        if (data == null) {
-
-            savedCall.reject("No folder selected");
 
             savedCall = null;
 
@@ -98,14 +79,18 @@ public class TrimPlugin extends Plugin {
             return;
         }
 
-        final int flags =
-            data.getFlags()
-            & (Intent.FLAG_GRANT_READ_URI_PERMISSION |
-               Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        int flags = data.getFlags()
+                & (Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                   Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-        getActivity()
-            .getContentResolver()
-            .takePersistableUriPermission(uri, flags);
+        try {
+
+            getActivity()
+                .getContentResolver()
+                .takePersistableUriPermission(uri, flags);
+
+        } catch (Exception ignored) {
+        }
 
         JSObject response = new JSObject();
 
