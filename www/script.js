@@ -4,8 +4,39 @@ let selectedWorld = null;
    SELECT WORLD
 ========================= */
 
-function selectWorld() {
-    document.getElementById("worldPicker").click();
+async function selectWorld() {
+
+    try {
+
+        const plugin =
+            window.Capacitor?.Plugins?.TrimPlugin;
+
+        if (!plugin) {
+
+            alert("❌ Native TrimPlugin not found.");
+
+            return;
+        }
+
+        const result =
+            await plugin.selectWorld();
+
+        selectedWorld = {
+            uri: result.uri
+        };
+
+        alert(
+            "✅ World folder selected successfully!\n\n" +
+            result.uri
+        );
+
+    } catch (error) {
+
+        alert(
+            "❌ World selection failed:\n\n" +
+            String(error)
+        );
+    }
 }
 
 function worldSelected(input) {
