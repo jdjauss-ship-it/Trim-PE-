@@ -1,3 +1,9 @@
+let selectedWorld = null;
+
+/* =========================
+   SELECT WORLD
+========================= */
+
 function selectWorld() {
     document.getElementById("worldPicker").click();
 }
@@ -5,101 +11,195 @@ function selectWorld() {
 function worldSelected(input) {
     const files = input.files;
 
-    if (!files || files.length === 0) {
-        return;
+    if (!files || files.length === 0) return;
+
+    let worldName = files[0].name;
+
+    if (files[0].webkitRelativePath) {
+        worldName = files[0].webkitRelativePath.split("/")[0];
     }
 
-    const firstFile = files[0];
+    selectedWorld = {
+        name: worldName,
+        files: files
+    };
 
     alert(
         "World selected successfully!\n\n" +
-        "Files found: " + files.length + "\n" +
-        "First file: " + firstFile.name
+        "World: " + selectedWorld.name + "\n" +
+        "Files found: " + files.length
     );
 }
 
+/* =========================
+   TRIM WORLD
+========================= */
+
 function trimWorld() {
-alert("Please select a Minecraft world first.");
+
+    if (!selectedWorld) {
+        alert("Please select a Minecraft world first.");
+        return;
+    }
+
+    const message =
+        "Trim World\n\n" +
+        "Selected World: " + selectedWorld.name +
+        "\n\nCoordinate trimming setup will open here.";
+
+    alert(message);
 }
+
+/* =========================
+   BACKUP
+========================= */
 
 function backupWorld() {
-alert("Backup feature will be added soon!");
+
+    if (!selectedWorld) {
+        alert("Please select a Minecraft world first.");
+        return;
+    }
+
+    alert(
+        "Backup World\n\n" +
+        "Selected World: " + selectedWorld.name +
+        "\n\nBackup system is ready for the next development step."
+    );
 }
+
+/* =========================
+   SETTINGS
+========================= */
 
 function openSettings() {
-alert("Settings will be available soon!");
+
+    document.body.innerHTML = `
+        <div class="overlay"></div>
+
+        <main class="app">
+
+            <header class="header">
+                <h1>SETTINGS</h1>
+                <p>Trim PE</p>
+            </header>
+
+            <section class="menu">
+
+                <div class="about-card">
+
+                    <h2>Settings</h2>
+
+                    <p class="description">
+                        Trim PE settings and preferences.
+                    </p>
+
+                    <hr>
+
+                    <p>
+                        ⚠️ Always create a backup before trimming a world.
+                    </p>
+
+                    <hr>
+
+                    <button class="menu-btn" onclick="goHome()">
+                        ← <span>Back to Home</span>
+                    </button>
+
+                </div>
+
+            </section>
+
+        </main>
+    `;
 }
+
+/* =========================
+   ABOUT
+========================= */
 
 function openAbout() {
-document.body.innerHTML = `
-<div class="overlay"></div>
 
-    <main class="app">
+    document.body.innerHTML = `
+        <div class="overlay"></div>
 
-        <header class="header">
-            <h1>ABOUT</h1>
-            <p>Trim PE</p>
-        </header>
+        <main class="app">
 
-        <section class="menu">
+            <header class="header">
+                <h1>ABOUT</h1>
+                <p>Trim PE</p>
+            </header>
 
-            <div class="about-card">
-                <h2>Trim PE</h2>
+            <section class="menu">
 
-                <p class="description">
-                    Trim PE is a simple and easy-to-use tool designed for
-                    Minecraft Bedrock and Pocket Edition players. It helps
-                    manage and trim Minecraft worlds with a clean, modern,
-                    and user-friendly experience.
-                </p>
+                <div class="about-card">
 
-                <hr>
+                    <h2>Trim PE</h2>
 
-                <p><strong>Developer</strong></p>
-                <p>WindX</p>
+                    <p class="description">
+                        Trim PE is a simple and easy-to-use tool designed
+                        for Minecraft Bedrock and Pocket Edition players.
+                        It helps manage Minecraft worlds with a clean,
+                        modern and user-friendly experience.
+                    </p>
 
-                <hr>
+                    <hr>
 
-                <button class="menu-btn" onclick="openDiscord()">
-                    💬 <span>Discord: windx.io</span>
-                </button>
+                    <p><strong>Developer</strong></p>
+                    <p>WindX</p>
 
-                <button class="menu-btn" onclick="openDiscordServer()">
-                    🌐 <span>Discord Server</span>
-                </button>
+                    <hr>
 
-                <button class="menu-btn" onclick="openGithub()">
-                    🐙 <span>GitHub</span>
-                </button>
+                    <button class="menu-btn" onclick="openDiscord()">
+                        💬 <span>Discord: windx.io</span>
+                    </button>
 
-                <button class="menu-btn" onclick="goHome()">
-                    ← <span>Back to Home</span>
-                </button>
+                    <button class="menu-btn" onclick="openDiscordServer()">
+                        🌐 <span>Discord Server</span>
+                    </button>
 
-            </div>
+                    <button class="menu-btn" onclick="openGithub()">
+                        🐙 <span>GitHub</span>
+                    </button>
 
-        </section>
+                    <button class="menu-btn" onclick="goHome()">
+                        ← <span>Back to Home</span>
+                    </button>
 
-    </main>
-`;
+                </div>
 
+            </section>
+
+        </main>
+    `;
 }
 
+/* =========================
+   LINKS
+========================= */
+
 function openDiscord() {
-alert("Discord username: windx.io");
+    alert("Discord username: windx.io");
 }
 
 function openDiscordServer() {
-window.open("https://discord.gg/RjYR6vVjQw", "_blank");
+    window.open(
+        "https://discord.gg/RjYR6vVjQw",
+        "_blank"
+    );
 }
 
 function openGithub() {
-window.open("https://github.com/jdjauss-ship-it", "_blank");
+    window.open(
+        "https://github.com/jdjauss-ship-it",
+        "_blank"
+    );
 }
 
 function goHome() {
-location.reload();
+    location.reload();
 }
+
 /* =========================
    NATIVE ANDROID TEST
 ========================= */
@@ -108,17 +208,25 @@ async function testNativeConnection() {
 
     try {
 
+        const plugin =
+            window.Capacitor?.Plugins?.TrimPlugin;
+
+        if (!plugin) {
+            alert("Native Trim Plugin was not found.");
+            return;
+        }
+
         const result =
-            await window.Capacitor.Plugins.TrimPlugin
-                .testConnection();
+            await plugin.testConnection();
 
         alert(result.message);
 
     } catch (error) {
 
         alert(
-            "Native connection failed: " + error
+            "Native connection failed: " +
+            error.message
         );
 
     }
-            }
+        }
