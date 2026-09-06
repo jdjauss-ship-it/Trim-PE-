@@ -1,5 +1,5 @@
 {
-"appId": "com.windx.trimpe",
-"appName": "Trim PE",
-"webDir": "."
+  "appId": "com.windx.trimpe",
+  "appName": "Trim PE",
+  "webDir": "www"
 }
