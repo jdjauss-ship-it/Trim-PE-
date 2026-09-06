@@ -9,6 +9,7 @@ function selectWorld() {
 }
 
 function worldSelected(input) {
+
     const files = input.files;
 
     if (!files || files.length === 0) return;
@@ -16,7 +17,8 @@ function worldSelected(input) {
     let worldName = files[0].name;
 
     if (files[0].webkitRelativePath) {
-        worldName = files[0].webkitRelativePath.split("/")[0];
+        worldName =
+            files[0].webkitRelativePath.split("/")[0];
     }
 
     selectedWorld = {
@@ -31,6 +33,7 @@ function worldSelected(input) {
     );
 }
 
+
 /* =========================
    TRIM WORLD
 ========================= */
@@ -42,13 +45,13 @@ function trimWorld() {
         return;
     }
 
-    const message =
+    alert(
         "Trim World\n\n" +
         "Selected World: " + selectedWorld.name +
-        "\n\nCoordinate trimming setup will open here.";
-
-    alert(message);
+        "\n\nTrim Engine will be connected next."
+    );
 }
+
 
 /* =========================
    BACKUP
@@ -64,9 +67,10 @@ function backupWorld() {
     alert(
         "Backup World\n\n" +
         "Selected World: " + selectedWorld.name +
-        "\n\nBackup system is ready for the next development step."
+        "\n\nBackup system will be connected next."
     );
 }
+
 
 /* =========================
    SETTINGS
@@ -114,6 +118,7 @@ function openSettings() {
     `;
 }
 
+
 /* =========================
    ABOUT
 ========================= */
@@ -137,33 +142,47 @@ function openAbout() {
                     <h2>Trim PE</h2>
 
                     <p class="description">
-                        Trim PE is a simple and easy-to-use tool designed
-                        for Minecraft Bedrock and Pocket Edition players.
-                        It helps manage Minecraft worlds with a clean,
-                        modern and user-friendly experience.
+                        Trim PE is a simple and easy-to-use tool
+                        designed for Minecraft Bedrock and Pocket
+                        Edition players. It helps manage Minecraft
+                        worlds with a clean and user-friendly
+                        experience.
                     </p>
 
                     <hr>
 
                     <p><strong>Developer</strong></p>
+
                     <p>WindX</p>
 
                     <hr>
 
-                    <button class="menu-btn" onclick="openDiscord()">
+                    <button class="menu-btn"
+                        onclick="openDiscord()">
+
                         💬 <span>Discord: windx.io</span>
+
                     </button>
 
-                    <button class="menu-btn" onclick="openDiscordServer()">
+                    <button class="menu-btn"
+                        onclick="openDiscordServer()">
+
                         🌐 <span>Discord Server</span>
+
                     </button>
 
-                    <button class="menu-btn" onclick="openGithub()">
+                    <button class="menu-btn"
+                        onclick="openGithub()">
+
                         🐙 <span>GitHub</span>
+
                     </button>
 
-                    <button class="menu-btn" onclick="goHome()">
+                    <button class="menu-btn"
+                        onclick="goHome()">
+
                         ← <span>Back to Home</span>
+
                     </button>
 
                 </div>
@@ -174,6 +193,7 @@ function openAbout() {
     `;
 }
 
+
 /* =========================
    LINKS
 ========================= */
@@ -182,23 +202,29 @@ function openDiscord() {
     alert("Discord username: windx.io");
 }
 
+
 function openDiscordServer() {
+
     window.open(
         "https://discord.gg/RjYR6vVjQw",
         "_blank"
     );
 }
 
+
 function openGithub() {
+
     window.open(
         "https://github.com/jdjauss-ship-it",
         "_blank"
     );
 }
 
+
 function goHome() {
     location.reload();
 }
+
 
 /* =========================
    NATIVE ANDROID TEST
@@ -208,25 +234,27 @@ async function testNativeConnection() {
 
     try {
 
-        const plugin =
-            window.Capacitor?.Plugins?.TrimPlugin;
-
-        if (!plugin) {
-            alert("Native Trim Plugin was not found.");
+        if (!window.Capacitor) {
+            alert("❌ Capacitor was not found!");
             return;
         }
 
-        const result =
-            await plugin.testConnection();
+        const TrimPlugin =
+            window.Capacitor.registerPlugin("TrimPlugin");
 
-        alert(result.message);
+        const result =
+            await TrimPlugin.testConnection();
+
+        alert(
+            "✅ " + result.message
+        );
 
     } catch (error) {
 
         alert(
-            "Native connection failed: " +
-            error.message
+            "❌ Native connection failed:\n\n" +
+            error
         );
 
     }
-        }
+           }
