@@ -163,19 +163,44 @@ function trimWorld() {
    BACKUP
 ========================= */
 
-function backupWorld() {
+async function backupWorld() {
 
-    if (!selectedWorld) {
+    if (!selectedWorld || !selectedWorld.uri) {
+
         alert("❌ Please select a valid Minecraft world first.");
         return;
     }
 
-    alert(
-        "💾 Backup\n\n" +
-        "Backup system will be connected to the selected world next."
-    );
-}
+    try {
 
+        const plugin =
+            window.Capacitor?.Plugins?.TrimPlugin;
+
+        if (!plugin) {
+
+            alert("❌ TrimPlugin not found.");
+            return;
+        }
+
+        const result =
+            await plugin.backupWorld({
+                uri: selectedWorld.uri
+            });
+
+        alert(
+            "✅ " + result.message +
+            "\n\nBackup folder:\n" +
+            result.backupName
+        );
+
+    } catch (error) {
+
+        alert(
+            "❌ Backup failed:\n\n" +
+            String(error)
+        );
+    }
+}
 
 /* =========================
    SETTINGS
