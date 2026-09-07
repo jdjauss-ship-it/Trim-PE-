@@ -17,17 +17,12 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         aaptOptions {
-
-            // Files and dirs to omit from the packaged assets dir
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
-
         }
     }
 
     buildTypes {
-
         release {
-
             minifyEnabled false
 
             proguardFiles(
@@ -38,16 +33,11 @@ android {
     }
 }
 
-
 repositories {
-
     flatDir {
-
         dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
-
     }
 }
-
 
 dependencies {
 
@@ -62,7 +52,7 @@ dependencies {
 
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
 
-    // DocumentFile for accessing selected Minecraft world folders
+    // Allows Trim PE to access selected folders
     implementation "androidx.documentfile:documentfile:1.0.1"
 
     implementation project(':capacitor-android')
@@ -76,9 +66,7 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
 }
 
-
 apply from: 'capacitor.build.gradle'
-
 
 try {
 
@@ -87,7 +75,6 @@ try {
     if (servicesJSON.text) {
 
         apply plugin: 'com.google.gms.google-services'
-
     }
 
 } catch(Exception e) {
