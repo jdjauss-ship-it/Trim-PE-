@@ -1,7 +1,7 @@
 let selectedWorld = null;
 
 /* =========================
-   SELECT WORLD
+   SELECT & VERIFY WORLD
 ========================= */
 
 async function selectWorld() {
@@ -12,23 +12,52 @@ async function selectWorld() {
             window.Capacitor?.Plugins?.TrimPlugin;
 
         if (!plugin) {
-
-            alert("❌ Native TrimPlugin not found.");
-
+            alert("❌ TrimPlugin not found.");
             return;
         }
 
-        const result =
+        // Open Android native folder picker
+        const selection =
             await plugin.selectWorld();
 
+        if (!selection || !selection.uri) {
+            alert("❌ No folder selected.");
+            return;
+        }
+
+        // Save selected world
         selectedWorld = {
-            uri: result.uri
+            uri: selection.uri
         };
 
-        alert(
-            "✅ World folder selected successfully!\n\n" +
-            result.uri
-        );
+        // Verify Minecraft world
+        const verification =
+            await plugin.verifyWorld({
+                uri: selectedWorld.uri
+            });
+
+        if (verification.validWorld) {
+
+            alert(
+                "✅ Valid Minecraft Bedrock World!\n\n" +
+                "level.dat: Found ✅\n" +
+                "db folder: Found ✅"
+            );
+
+        } else {
+
+            alert(
+                "❌ Invalid Minecraft World!\n\n" +
+                "This folder does not contain the required Minecraft world files.\n\n" +
+                "level.dat: " +
+                (verification.hasLevelDat ? "Found ✅" : "Not Found ❌") +
+                "\n" +
+                "db folder: " +
+                (verification.hasDbFolder ? "Found ✅" : "Not Found ❌")
+            );
+
+            selectedWorld = null;
+        }
 
     } catch (error) {
 
@@ -39,29 +68,14 @@ async function selectWorld() {
     }
 }
 
+
+/* =========================
+   OLD FILE PICKER
+   (Not used now)
+========================= */
+
 function worldSelected(input) {
-
-    const files = input.files;
-
-    if (!files || files.length === 0) return;
-
-    let worldName = files[0].name;
-
-    if (files[0].webkitRelativePath) {
-        worldName =
-            files[0].webkitRelativePath.split("/")[0];
-    }
-
-    selectedWorld = {
-        name: worldName,
-        files: files
-    };
-
-    alert(
-        "World selected successfully!\n\n" +
-        "World: " + selectedWorld.name + "\n" +
-        "Files found: " + files.length
-    );
+    // Native Android folder picker is now used.
 }
 
 
@@ -72,14 +86,14 @@ function worldSelected(input) {
 function trimWorld() {
 
     if (!selectedWorld) {
-        alert("Please select a Minecraft world first.");
+        alert("❌ Please select a valid Minecraft world first.");
         return;
     }
 
     alert(
-        "Trim World\n\n" +
-        "Selected World: " + selectedWorld.name +
-        "\n\nTrim Engine will be connected next."
+        "✂️ Trim World\n\n" +
+        "World selected successfully!\n\n" +
+        "The coordinate trim system will be added next."
     );
 }
 
@@ -91,14 +105,13 @@ function trimWorld() {
 function backupWorld() {
 
     if (!selectedWorld) {
-        alert("Please select a Minecraft world first.");
+        alert("❌ Please select a valid Minecraft world first.");
         return;
     }
 
     alert(
-        "Backup World\n\n" +
-        "Selected World: " + selectedWorld.name +
-        "\n\nBackup system will be connected next."
+        "💾 Backup\n\n" +
+        "Backup system will be connected to the selected world next."
     );
 }
 
@@ -175,45 +188,30 @@ function openAbout() {
                     <p class="description">
                         Trim PE is a simple and easy-to-use tool
                         designed for Minecraft Bedrock and Pocket
-                        Edition players. It helps manage Minecraft
-                        worlds with a clean and user-friendly
-                        experience.
+                        Edition players.
                     </p>
 
                     <hr>
 
                     <p><strong>Developer</strong></p>
-
                     <p>WindX</p>
 
                     <hr>
 
-                    <button class="menu-btn"
-                        onclick="openDiscord()">
-
+                    <button class="menu-btn" onclick="openDiscord()">
                         💬 <span>Discord: windx.io</span>
-
                     </button>
 
-                    <button class="menu-btn"
-                        onclick="openDiscordServer()">
-
+                    <button class="menu-btn" onclick="openDiscordServer()">
                         🌐 <span>Discord Server</span>
-
                     </button>
 
-                    <button class="menu-btn"
-                        onclick="openGithub()">
-
+                    <button class="menu-btn" onclick="openGithub()">
                         🐙 <span>GitHub</span>
-
                     </button>
 
-                    <button class="menu-btn"
-                        onclick="goHome()">
-
+                    <button class="menu-btn" onclick="goHome()">
                         ← <span>Back to Home</span>
-
                     </button>
 
                 </div>
@@ -235,7 +233,6 @@ function openDiscord() {
 
 
 function openDiscordServer() {
-
     window.open(
         "https://discord.gg/RjYR6vVjQw",
         "_blank"
@@ -244,7 +241,6 @@ function openDiscordServer() {
 
 
 function openGithub() {
-
     window.open(
         "https://github.com/jdjauss-ship-it",
         "_blank"
@@ -258,7 +254,7 @@ function goHome() {
 
 
 /* =========================
-   NATIVE ANDROID TEST
+   NATIVE CONNECTION TEST
 ========================= */
 
 async function testNativeConnection() {
@@ -269,20 +265,14 @@ async function testNativeConnection() {
             window.Capacitor?.Plugins?.TrimPlugin;
 
         if (!plugin) {
-
-            alert(
-                "❌ TrimPlugin not found."
-            );
-
+            alert("❌ TrimPlugin not found.");
             return;
         }
 
         const result =
             await plugin.testConnection();
 
-        alert(
-            "✅ " + result.message
-        );
+        alert("✅ " + result.message);
 
     } catch (error) {
 
@@ -290,6 +280,5 @@ async function testNativeConnection() {
             "❌ Native connection failed:\n\n" +
             String(error)
         );
-
     }
-}
+               }
