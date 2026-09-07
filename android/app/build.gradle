@@ -19,6 +19,12 @@ android {
         aaptOptions {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
+
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
     }
 
     buildTypes {
@@ -29,6 +35,12 @@ android {
                 getDefaultProguardFile('proguard-android.txt'),
                 'proguard-rules.pro'
             )
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path file("src/main/cpp/CMakeLists.txt")
         }
     }
 }
@@ -52,7 +64,6 @@ dependencies {
 
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
 
-    // Allows Trim PE to access selected folders
     implementation "androidx.documentfile:documentfile:1.0.1"
 
     implementation project(':capacitor-android')
@@ -73,7 +84,6 @@ try {
     def servicesJSON = file('google-services.json')
 
     if (servicesJSON.text) {
-
         apply plugin: 'com.google.gms.google-services'
     }
 
