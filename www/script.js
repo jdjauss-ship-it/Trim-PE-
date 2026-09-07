@@ -425,3 +425,34 @@ function calculateTrim() {
         "Chunks to keep: " + totalChunks
     );
 }
+    async function testCppEngine() {
+
+    try {
+
+        const plugin =
+            window.Capacitor?.Plugins?.TrimPlugin;
+
+        if (!plugin) {
+
+            alert(
+                "❌ TrimPlugin not found."
+            );
+
+            return;
+        }
+
+        const result =
+            await plugin.testCppEngine();
+
+        alert(
+            "⚡ " + result.message
+        );
+
+    } catch (error) {
+
+        alert(
+            "❌ C++ Engine failed:\n\n" +
+            String(error)
+        );
+    }
+    }
