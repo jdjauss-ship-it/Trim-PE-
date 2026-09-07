@@ -43,6 +43,36 @@ public class TrimPlugin extends Plugin {
 
 
     // =========================
+    // TEST C++ ENGINE
+    // =========================
+
+    @PluginMethod
+    public void testCppEngine(PluginCall call) {
+
+        try {
+
+            TrimEngine engine = new TrimEngine();
+
+            String message =
+                    engine.testNativeEngine();
+
+            JSObject result = new JSObject();
+
+            result.put("message", message);
+
+            call.resolve(result);
+
+        } catch (Exception error) {
+
+            call.reject(
+                    "C++ Engine failed: "
+                            + error.getMessage()
+            );
+        }
+    }
+
+
+    // =========================
     // SELECT WORLD
     // =========================
 
@@ -404,28 +434,31 @@ public class TrimPlugin extends Plugin {
                         .getContentResolver()
                         .openOutputStream(destinationUri);
 
-        byte[] buffer =
-                new byte[8192];
-
-        int length;
-
-        while (
-                input != null &&
-                (length = input.read(buffer)) > 0
-        ) {
-
-            output.write(
-                    buffer,
-                    0,
-                    length
-            );
+        if (input == null || output == null) {
+            throw new Exception("Could not open file for copying");
         }
 
-        if (input != null) {
+        try {
+
+            byte[] buffer =
+                    new byte[8192];
+
+            int length;
+
+            while ((length = input.read(buffer)) > 0) {
+
+                output.write(
+                        buffer,
+                        0,
+                        length
+                );
+            }
+
+            output.flush();
+
+        } finally {
+
             input.close();
-        }
-
-        if (output != null) {
             output.close();
         }
     }
