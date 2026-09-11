@@ -5,19 +5,22 @@ project(trimpe)
 include(FetchContent)
 
 # =========================
-# Download LevelDB MCPE
+# LevelDB MCPE
 # =========================
+
+set(LEVELDB_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(LEVELDB_BUILD_BENCHMARKS OFF CACHE BOOL "" FORCE)
 
 FetchContent_Declare(
     leveldb_mcpe
     GIT_REPOSITORY https://github.com/Amulet-Team/leveldb-mcpe.git
-    GIT_TAG main
+    GIT_TAG master
 )
 
 FetchContent_MakeAvailable(leveldb_mcpe)
 
 # =========================
-# Trim PE Native Engine
+# Trim PE Engine
 # =========================
 
 add_library(
@@ -31,19 +34,11 @@ find_library(
     log
 )
 
-# =========================
-# Include LevelDB headers
-# =========================
-
 target_include_directories(
     trimpe
     PRIVATE
     ${leveldb_mcpe_SOURCE_DIR}/include
 )
-
-# =========================
-# Link libraries
-# =========================
 
 target_link_libraries(
     trimpe
